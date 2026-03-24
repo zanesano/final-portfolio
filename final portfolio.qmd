@@ -1,0 +1,372 @@
+---
+title: "Portfolio Part 1: Development and Planning"
+author: "Author: Zane Sano"
+format:
+  html:
+    theme: none
+    toc: true
+    toc-depth: 2
+    page-layout: full
+    smooth-scroll: true
+    code-fold: false
+    include-in-header:
+      text: |
+        <style>
+          :root {
+            --bg: #0a0f1f;
+            --panel: #1b2748;
+            --panel-2: #24345f;
+            --panel-3: #31467a;
+            --border-light: #8ea4d6;
+            --border-mid: #4b6297;
+            --border-dark: #0f1833;
+            --text: #e8eefc;
+            --muted: #bfd0f7;
+            --accent: #8fd3ff;
+            --gold: #f4d36b;
+            --link: #9bd7ff;
+          }
+
+          html {
+            background:
+              radial-gradient(circle at 15% 20%, rgba(255,255,255,0.14) 0 1px, transparent 1px),
+              radial-gradient(circle at 80% 30%, rgba(255,255,255,0.12) 0 1px, transparent 1px),
+              radial-gradient(circle at 35% 75%, rgba(255,255,255,0.10) 0 1px, transparent 1px),
+              radial-gradient(circle at 65% 60%, rgba(255,255,255,0.12) 0 1px, transparent 1px),
+              linear-gradient(180deg, #09101f 0%, #101936 45%, #16244a 100%);
+            background-size: 240px 240px, 300px 300px, 280px 280px, 320px 320px, auto;
+            min-height: 100%;
+          }
+          
+          .title {
+            font-family: "Orbitron", "Trebuchet MS", Verdana, Arial, sans-serif;
+            font-size: 2.2rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            line-height: 1;
+          }
+          
+          .author {
+           font-family: "Lucida Console", "Courier New", monospace;
+           font-size: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold);
+          }
+
+          body {
+            background: transparent;
+            color: var(--text);
+            font-family: Verdana, Tahoma, Arial, sans-serif;
+            line-height: 1.65;
+            font-size: 16px;
+          }
+
+          #quarto-content {
+            padding-top: 1.2rem;
+            padding-bottom: 2rem;
+          }
+
+          .quarto-title-block {
+            background: linear-gradient(180deg, #253b71 0%, #18274d 100%);
+            border: 3px solid;
+            border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+            box-shadow: inset 1px 1px 0 #dbe6ff, inset -1px -1px 0 #102044, 0 6px 18px rgba(0,0,0,0.35);
+            padding: 1.25rem 1.5rem 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+          }
+
+          .quarto-title-block .title {
+            font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
+            font-size: 2.1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #ffffff;
+            text-shadow: 1px 1px 0 #0b1328;
+            margin-bottom: 0.35rem;
+          }
+
+          .quarto-title-block .author,
+          .quarto-title-block .date,
+          .quarto-title-block .description {
+            color: var(--muted);
+            font-size: 0.95rem;
+          }
+
+          #TOC, .sidebar nav[role="doc-toc"] {
+            background: linear-gradient(180deg, #213462 0%, #18284f 100%);
+            border: 3px solid;
+            border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+            padding: 0.8rem 1rem;
+            box-shadow: inset 1px 1px 0 #dbe6ff, inset -1px -1px 0 #102044;
+          }
+
+          #TOC .toc-title {
+            color: var(--gold);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+
+          a {
+            color: var(--link);
+          }
+
+          a:hover {
+            color: #d6f0ff;
+          }
+
+          h2 {
+            margin-top: 2.2rem;
+            margin-bottom: 1rem;
+            padding: 0.55rem 0.75rem;
+            font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-size: 1.2rem;
+            color: #ffffff;
+            background: linear-gradient(180deg, #30487d 0%, #22355f 100%);
+            border: 3px solid;
+            border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+            box-shadow: inset 1px 1px 0 #dbe6ff, inset -1px -1px 0 #13254a;
+          }
+
+          h3 {
+            margin-top: 1.3rem;
+            margin-bottom: 0.7rem;
+            color: var(--gold);
+            font-size: 1rem;
+            font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
+          }
+
+          p, li {
+            color: var(--text);
+          }
+
+        code {
+          font-family: "Lucida Console", "Courier New", monospace;
+          text-transform: uppercase;
+          color: #ffffff;
+          letter-spacing: 0.5px;
+
+          background: rgba(255, 255, 255, 0.08);
+          backdrop-filter: blur(6px);
+          -webkit-backdrop-filter: blur(6px);
+
+          padding: 0.12em 0.4em;
+          border: 1px solid rgba(255, 255, 255, 0.25);
+          border-radius: 3px;
+
+          font-size: 0.95em;
+          }
+
+          .retro-panel {
+            background: linear-gradient(180deg, var(--panel-2) 0%, var(--panel) 100%);
+            border: 3px solid;
+            border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+            box-shadow: inset 1px 1px 0 #dbe6ff, inset -1px -1px 0 #112247, 0 4px 12px rgba(0,0,0,0.22);
+            padding: 1.1rem 1.2rem;
+            margin: 1rem 0 1.5rem 0;
+          }
+
+          .intro-terminal {
+            background: #0b1327;
+            border: 3px solid;
+            border-color: #7ea2dc #09152f #09152f #7ea2dc;
+            box-shadow: inset 1px 1px 0 #d8e5ff, inset -1px -1px 0 #09152f;
+            padding: 1rem 1.15rem;
+            margin-bottom: 1.5rem;
+            font-family: "Lucida Console", "Courier New", monospace;
+            color: #b8ffd4;
+          }
+
+          .intro-terminal strong {
+            color: #fff3a1;
+          }
+
+          table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1rem 0 1.25rem 0;
+            background: #132146;
+            border: 3px solid;
+            border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+            box-shadow: inset 1px 1px 0 #dbe6ff, inset -1px -1px 0 #102044;
+          }
+
+          thead th {
+            background: linear-gradient(180deg, #4e6fad 0%, #365185 100%);
+            color: #ffffff;
+            text-align: left;
+            padding: 0.7rem 0.8rem;
+            border-bottom: 2px solid #18274d;
+            font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
+          }
+
+          tbody td {
+            padding: 0.7rem 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            color: var(--text);
+          }
+
+          tbody tr:nth-child(odd) td {
+            background: rgba(255,255,255,0.02);
+          }
+
+          tbody tr:hover td {
+            background: rgba(143,211,255,0.09);
+          }
+
+          ul {
+            padding-left: 1.35rem;
+          }
+
+          li {
+            margin-bottom: 0.35rem;
+          }
+
+          hr {
+            border: none;
+            border-top: 2px solid #5b74a8;
+            margin: 1.8rem 0;
+            opacity: 0.8;
+          }
+
+          .summary-box {
+            background: linear-gradient(180deg, #2a3f73 0%, #1c2b52 100%);
+            border: 3px solid;
+            border-color: #d9e5ff #102044 #102044 #d9e5ff;
+            box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #102044;
+            padding: 1rem 1.15rem;
+            margin-top: 1rem;
+          }
+
+          .summary-box p:last-child {
+            margin-bottom: 0;
+          }
+
+          .callout {
+            background: linear-gradient(180deg, #24355f 0%, #18274d 100%) !important;
+            border: 3px solid !important;
+            border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light) !important;
+            border-radius: 0 !important;
+            box-shadow: inset 1px 1px 0 #dbe6ff, inset -1px -1px 0 #102044;
+          }
+
+          .callout-title-container {
+            color: var(--gold) !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+          
+          
+        </style>
+---
+<br>
+<div class="intro-terminal">
+<strong>MISSION LOG //</strong> My project will use NASA meteorite landing data to explore where meteorites are found, how recorded landings have changed over time, and how meteorite mass differs across categories. 
+</div>
+
+## Data Description
+
+<div class="retro-panel">
+
+### 1. Identify your data source.
+
+I will be using a dataset on meteorite landings from NASA, which I found through NASA's Open Data Portal. The dataset contains records of meteorites that have been found or observed falling to Earth and includes their physical characteristics and geographic locations.
+
+### 2. Describe your data, including variables and data types.
+
+The dataset contains over 45,000 observations and includes a mix of categorical and numerical variables. These variables provide identifying information, classification details, measurements, and geographic coordinates that can be used to analyze both temporal and spatial patterns in meteorite landings.
+
+
+| Name | Type | Description |
+|:--|:--|:--|
+| &nbsp;`name`&nbsp; | character | name of the meteorite |
+| &nbsp;`id`&nbsp; | numeric | unique identifier for each meteorite |
+| &nbsp;`nametype`&nbsp; | character | indicates whether the meteorite is classified as valid |
+| &nbsp;`recclass`&nbsp; | character | meteorite classification type |
+| &nbsp;`mass (g)`&nbsp; | numeric | mass of the meteorite |
+| &nbsp;`fall`&nbsp; | character | indicates whether the meteorite was observed falling or later discovered |
+| &nbsp;`year`&nbsp; | numeric | year the meteorite was recorded |
+| &nbsp;`reclat`&nbsp; | numeric | latitude coordinate of the meteorite landing |
+| &nbsp;`reclong`&nbsp; | numeric | longitude coordinate of the meteorite landing |
+| &nbsp;`geoLocation`&nbsp; | character | combined latitude and longitude coordinates |
+
+### 3. Identify the research questions you want to answer.
+
+- How has the number of recorded meteorite landings changed over time?
+- Where are meteorites most commonly found across the globe?
+- How does meteorite mass vary across different classifications and fall types?
+
+</div>
+
+## Data Visualization
+
+<div class="retro-panel">
+
+### 1. What do you want your final visualizations to look like?
+
+The final project will include 2 to 3 visualizations that clearly answer my research questions and make the dataset easy to interpret. These will likely include:
+
+- A **line graph** showing the number of meteorites recorded per year
+- A **map visualization** displaying meteorite landing locations using latitude and longitude
+- A **boxplot** or **distribution plot** comparing meteorite mass across classifications or fall types
+
+### 2. What do you want to highlight on your final visualizations in order to answer your research questions? How do you plan to do that?
+
+I want to highlight trends in meteorite discoveries over time, geographic clustering of meteorite landings, and differences in meteorite mass across categories. These visualizations should make it easy to see whether meteorite records increase over time, whether certain parts of the world have a heavier concentration of finds, and whether mass differs between meteorites that were observed falling versus those that were found later.
+
+I plan to do this through grouping, summarizing, and appropriate scaling. This will be especially important for mass, since that variable is highly skewed and may need transformation or careful plotting in order to be interpreted clearly.
+
+### 3. What is missing from your data or would need to change in your data to create these visualizations?
+
+- The &nbsp;`year`&nbsp; variable is currently stored as numeric and may need to be converted into a proper date or time format
+- The &nbsp;`geolocation`&nbsp; field is redundant and may need to be separated or removed
+- Missing values in &nbsp;`mass`&nbsp;, &nbsp;`year`&nbsp;, &nbsp;`reclat`&nbsp;, and &nbsp;`reclong`&nbsp; will affect visualizations
+- Extreme outliers in mass may distort plots and will need to be addressed
+
+</div>
+
+## Data Cleaning
+
+<div class="retro-panel">
+
+### 1. Do you need to reformat any variables into different types (e.g. factors, time, dates, strings)? Or remove information from variable values?
+
+**Yes.** Several variables will need to be reformatted before analysis: the &nbsp;`year`&nbsp; variable should be converted into a date or time variable, and categorical variables such as &nbsp;`fall`&nbsp; and &nbsp;`recclass`&nbsp; may be better represented as factors. The column name &nbsp;`mass (g)`&nbsp; should also be renamed to remove parentheses and make it easier to work with in R.
+
+### 2. Do you need to deal with any missing data, especially missing data coded other than NA?
+
+**Yes.** The dataset contains missing values in important variables such as &nbsp;`mass (g)`&nbsp; and &nbsp;`geolocation`&nbsp;. These missing values will need to be filtered out or otherwise addressed depending on the type of visualization being created.
+
+### 3. Do you need to filter your data? How?
+
+**Yes.** Filtering will be necessary in order to remove observations with missing coordinates for mapping, exclude extreme or invalid values, and potentially focus on a more useful range of years for clearer analysis.
+
+### 4. Do you need to create any new variables? What variables? How?
+
+**Yes.** New variables will likely need to be created in order to support analysis. For example, &nbsp;`mass (g)`&nbsp; may be converted from grams to kilograms, a &nbsp;`decade`&nbsp; variable may be created from &nbsp;`year`&nbsp;, and meteorite classifications may be grouped into broader categories if needed for cleaner visualizations.
+
+### 5. Do you need to add new data (join) to your data? What data? How?
+
+**Potentially.** I may add external geographic data, such as country or continent boundaries, if that would help provide more context for the spatial distribution of meteorite landings.
+
+### 6. Do you need pivot your data in any way? Why? How?
+
+**Potentially.** The dataset may need to be reshaped in order to summarize meteorite counts by year or category, depending on the structure needed for my visualizations.
+
+### 7. Do you need to summarize any of the variables? Which ones? How?
+
+**Yes.** Summarizing will be necessary in order to count meteorites by year, calculate average or median mass, and compare distributions across categories such as classification or fall type.
+
+### 8. What other aspects of your data need to be “fixed” in order to make your data visualizations?
+
+Other aspects of the data may need to be fixed in order to create effective visualizations. This may include removing duplicate or unnecessary variables such as &nbsp;`geolocation`&nbsp;, addressing inconsistencies in classification names, and handling extreme outliers in the mass variable.
+
+### 9. Are there any variables you can exclude from your data?
+
+**Yes.** Some variables may be excluded if they are redundant or do not meaningfully contribute to my research questions. For example, &nbsp;`geolocation`&nbsp; may not be needed if latitude and longitude are already being used directly, and &nbsp;`id`&nbsp; may not be useful for analysis.
+
+</div>
