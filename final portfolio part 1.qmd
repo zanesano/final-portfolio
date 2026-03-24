@@ -1,0 +1,109 @@
+---
+title: "Portfolio Part 1: Development and Planning"
+author: "Author: Zane Sano"
+format:
+  html:
+    theme: cyborg
+    toc: true
+    toc-depth: 2
+    page-layout: full
+    smooth-scroll: true
+---
+
+My project will use NASA meteorite landing data to explore where meteorites are found, how recorded landings have changed over time, and how meteorite mass differs across categories.
+
+---
+
+## Data Description
+
+### 1. Identify your data source.
+
+I will be using a dataset on meteorite landings from NASA, which I found through NASA's Open Data Portal. The dataset contains records of meteorites that have been found or observed falling to Earth and includes their physical characteristics and geographic locations.
+
+### 2. Describe your data, including variables and data types.
+
+The dataset contains over 45,000 observations and includes a mix of categorical and numerical variables. These variables provide identifying information, classification details, measurements, and geographic coordinates that can be used to analyze both temporal and spatial patterns in meteorite landings.
+
+| Name | Type | Description |
+|:--|:--|:--|
+| `name` | character | name of the meteorite |
+| `id` | numeric | unique identifier for each meteorite |
+| `nametype` | character | indicates whether the meteorite is classified as valid |
+| `recclass` | character | meteorite classification type |
+| `mass (g)` | numeric | mass of the meteorite |
+| `fall` | character | indicates whether the meteorite was observed falling or later discovered |
+| `year` | numeric | year the meteorite was recorded |
+| `reclat` | numeric | latitude coordinate of the meteorite landing |
+| `reclong` | numeric | longitude coordinate of the meteorite landing |
+| `geoLocation` | character | combined latitude and longitude coordinates |
+
+### 3. Identify the research questions you want to answer.
+
+- How has the number of recorded meteorite landings changed over time?
+- Where are meteorites most commonly found across the globe?
+- How does meteorite mass vary across different classifications and fall types?
+
+---
+
+## Data Visualization
+
+### 1. What do you want your final visualizations to look like?
+
+The final project will include 2 to 3 visualizations that clearly answer my research questions and make the dataset easy to interpret. These will likely include:
+
+- A **line graph** showing the number of meteorites recorded per year
+- A **map visualization** displaying meteorite landing locations using latitude and longitude
+- A **boxplot** or **distribution plot** comparing meteorite mass across classifications or fall types
+
+### 2. What do you want to highlight on your final visualizations in order to answer your research questions? How do you plan to do that?
+
+I want to highlight trends in meteorite discoveries over time, geographic clustering of meteorite landings, and differences in meteorite mass across categories. These visualizations should make it easy to see whether meteorite records increase over time, whether certain parts of the world have a heavier concentration of finds, and whether mass differs between meteorites that were observed falling versus those that were found later.
+
+I plan to do this through grouping, summarizing, and appropriate scaling. This will be especially important for mass, since that variable is highly skewed and may need transformation or careful plotting in order to be interpreted clearly.
+
+### 3. What is missing from your data or would need to change in your data to create these visualizations?
+
+- The `year` variable is currently stored as numeric and may need to be converted into a proper date or time format
+- The `geolocation` field is redundant and may need to be separated or removed
+- Missing values in `mass`, `year`, `reclat`, and `reclong` will affect visualizations
+- Extreme outliers in mass may distort plots and will need to be addressed
+
+---
+
+## Data Cleaning
+
+### 1. Do you need to reformat any variables into different types (e.g. factors, time, dates, strings)? Or remove information from variable values?
+
+**Yes.** Several variables will need to be reformatted before analysis: the `year` variable should be converted into a date or time variable, and categorical variables such as `fall` and `recclass` may be better represented as factors. The column name `mass (g)` should also be renamed to remove parentheses and make it easier to work with in R.
+
+### 2. Do you need to deal with any missing data, especially missing data coded other than NA?
+
+**Yes.** The dataset contains missing values in important variables such as `mass (g)` and `geolocation`. These missing values will need to be filtered out or otherwise addressed depending on the type of visualization being created.
+
+### 3. Do you need to filter your data? How?
+
+**Yes.** Filtering will be necessary in order to remove observations with missing coordinates for mapping, exclude extreme or invalid values, and potentially focus on a more useful range of years for clearer analysis.
+
+### 4. Do you need to create any new variables? What variables? How?
+
+**Yes.** New variables will likely need to be created in order to support analysis. For example, `mass (g)` may be converted from grams to kilograms, a `decade` variable may be created from `year`, and meteorite classifications may be grouped into broader categories if needed for cleaner visualizations.
+
+### 5. Do you need to add new data (join) to your data? What data? How?
+
+**Potentially.** I may add external geographic data, such as country or continent boundaries, if that would help provide more context for the spatial distribution of meteorite landings.
+
+### 6. Do you need pivot your data in any way? Why? How?
+
+**Potentially.** The dataset may need to be reshaped in order to summarize meteorite counts by year or category, depending on the structure needed for my visualizations.
+
+### 7. Do you need to summarize any of the variables? Which ones? How?
+
+**Yes.** Summarizing will be necessary in order to count meteorites by year, calculate average or median mass, and compare distributions across categories such as classification or fall type.
+
+### 8. What other aspects of your data need to be “fixed” in order to make your data visualizations?
+
+Other aspects of the data that may need to be fixed in order to create effective visualizations include removing duplicate or unnecessary variables such as `geolocation`, addressing inconsistencies in classification names, and handling extreme outliers in the mass variable.
+
+### 9. Are there any variables you can exclude from your data?
+
+**Yes.** Some variables may be excluded if they are redundant or do not meaningfully contribute to my research questions. For example, `geolocation` may not be needed if latitude and longitude are already being used directly, and `id` may not be useful for analysis.
