@@ -8,7 +8,7 @@
 
 <meta name="author" content="Author: Zane Sano">
 
-<title>Portfolio Part 1: Development and Planning</title>
+<title>Portfolio Part 2: Data Cleaning and Rough Draft</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -27,17 +27,17 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="final portfolio part 1_files/libs/clipboard/clipboard.min.js"></script>
-<script src="final portfolio part 1_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="final portfolio part 1_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="final portfolio part 1_files/libs/quarto-html/popper.min.js"></script>
-<script src="final portfolio part 1_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="final portfolio part 1_files/libs/quarto-html/anchor.min.js"></script>
-<link href="final portfolio part 1_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="final portfolio part 1_files/libs/quarto-html/quarto-syntax-highlighting-dark-f418161beb48e0141c760e455f12af2c.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="final portfolio part 1_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="final portfolio part 1_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="final portfolio part 1_files/libs/bootstrap/bootstrap-951c621027c406984b4a4459b012b8ab.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script src="final portfolio part dos_files/libs/clipboard/clipboard.min.js"></script>
+<script src="final portfolio part dos_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="final portfolio part dos_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="final portfolio part dos_files/libs/quarto-html/popper.min.js"></script>
+<script src="final portfolio part dos_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="final portfolio part dos_files/libs/quarto-html/anchor.min.js"></script>
+<link href="final portfolio part dos_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="final portfolio part dos_files/libs/quarto-html/quarto-syntax-highlighting-dark-f418161beb48e0141c760e455f12af2c.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="final portfolio part dos_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="final portfolio part dos_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="final portfolio part dos_files/libs/bootstrap/bootstrap-951c621027c406984b4a4459b012b8ab.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <style>html{ scroll-behavior: smooth; }</style>
 
 
@@ -52,8 +52,8 @@ ul.task-list li input[type="checkbox"] {
    
   <ul class="collapse">
   <li><a href="#data-description" id="toc-data-description" class="nav-link active" data-scroll-target="#data-description">Data Description</a></li>
-  <li><a href="#data-visualization" id="toc-data-visualization" class="nav-link" data-scroll-target="#data-visualization">Data Visualization</a></li>
   <li><a href="#data-cleaning" id="toc-data-cleaning" class="nav-link" data-scroll-target="#data-cleaning">Data Cleaning</a></li>
+  <li><a href="#data-visualization" id="toc-data-visualization" class="nav-link" data-scroll-target="#data-visualization">Data Visualization</a></li>
   </ul>
 </nav>
 </div>
@@ -61,7 +61,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Portfolio Part 1: Development and Planning</h1>
+<h1 class="title">Portfolio Part 2: Data Cleaning and Rough Draft</h1>
 </div>
 
 
@@ -172,70 +172,75 @@ ul.task-list li input[type="checkbox"] {
 <hr>
 </section>
 </section>
-<section id="data-visualization" class="level2">
-<h2 class="anchored" data-anchor-id="data-visualization">Data Visualization</h2>
-<section id="what-do-you-want-your-final-visualizations-to-look-like" class="level3">
-<h3 class="anchored" data-anchor-id="what-do-you-want-your-final-visualizations-to-look-like">1. What do you want your final visualizations to look like?</h3>
-<p>The final project will include 2 to 3 visualizations that clearly answer my research questions and make the dataset easy to interpret. These will likely include:</p>
-<ul>
-<li>A <strong>line graph</strong> showing the number of meteorites recorded per year</li>
-<li>A <strong>map visualization</strong> displaying meteorite landing locations using latitude and longitude</li>
-<li>A <strong>boxplot</strong> or <strong>distribution plot</strong> comparing meteorite mass across classifications or fall types</li>
-</ul>
+<section id="data-cleaning" class="level2">
+<h2 class="anchored" data-anchor-id="data-cleaning">Data Cleaning</h2>
+<section id="setup" class="level3">
+<h3 class="anchored" data-anchor-id="setup">Setup</h3>
+<p>This code chunk will load the packages I want to use and read in the raw meteorite data from the data-raw folder as well as use <strong>clean_names( )</strong> so that variables such as <code>mass (g)</code> and <code>geoLocation</code> are renamed to cleaner formats like <code>mass_g</code> and <code>geo_location</code>. I am also going to remove columns with redundant information or information I don’t need for my visualizations. Lastly, I am going to convert the <code>fall</code> column into a factor variable type.</p>
 </section>
-<section id="what-do-you-want-to-highlight-on-your-final-visualizations-in-order-to-answer-your-research-questions-how-do-you-plan-to-do-that" class="level3">
-<h3 class="anchored" data-anchor-id="what-do-you-want-to-highlight-on-your-final-visualizations-in-order-to-answer-your-research-questions-how-do-you-plan-to-do-that">2. What do you want to highlight on your final visualizations in order to answer your research questions? How do you plan to do that?</h3>
-<p>I want to highlight trends in meteorite discoveries over time, geographic clustering of meteorite landings, and differences in meteorite mass across categories. These visualizations should make it easy to see whether meteorite records increase over time, whether certain parts of the world have a heavier concentration of finds, and whether mass differs between meteorites that were observed falling versus those that were found later.</p>
-<p>I plan to do this through grouping, summarizing, and appropriate scaling. This will be especially important for mass, since that variable is highly skewed and may need transformation or careful plotting in order to be interpreted clearly.</p>
+<section id="convert-variable-types" class="level3">
+<h3 class="anchored" data-anchor-id="convert-variable-types">Convert Variable Types</h3>
+<p>Next we will convert variable types to be better suited to our needs for making visualizations by using the mutate function to convert <code>fall</code> and <code>reclass</code> into factors.</p>
 </section>
-<section id="what-is-missing-from-your-data-or-would-need-to-change-in-your-data-to-create-these-visualizations" class="level3">
-<h3 class="anchored" data-anchor-id="what-is-missing-from-your-data-or-would-need-to-change-in-your-data-to-create-these-visualizations">3. What is missing from your data or would need to change in your data to create these visualizations?</h3>
-<ul>
-<li>The <code>year</code> variable is currently stored as numeric and may need to be converted into a proper date or time format</li>
-<li>The <code>geolocation</code> field is redundant and may need to be separated or removed</li>
-<li>Missing values in <code>mass</code>, <code>year</code>, <code>reclat</code>, and <code>reclong</code> will affect visualizations</li>
-<li>Extreme outliers in mass may distort plots and will need to be addressed</li>
-</ul>
+<section id="data-set-no.1" class="level3">
+<h3 class="anchored" data-anchor-id="data-set-no.1">Data Set No.1</h3>
+<p>My first data set will be used to visualize the landings of meteorites on Earth and in the US across different decades. I am going to filter the original data set to remove any years after 2026. I am also going to remove the columns for information I don’t need for this specific dataset.</p>
+<p>Next I am going to recreate an additional factor variable called <code>decades</code> based off the values of interest in <code>year</code>. I am also going to convert <code>mass_g</code> to <code>mass_kg</code>. I am also going to create a second data set that only includes the observations within the United States for my second map.</p>
+<p>Lastly I am going to save the cleaned data set into the correct folder.</p>
+</section>
+<section id="data-set-no.2" class="level3">
+<h3 class="anchored" data-anchor-id="data-set-no.2">Data Set No.2</h3>
+<p>My second visualization will display the iron content and the levels of thermal alteration of chondrite meteorites based on the Van Schmus and Wood classification, which ranks meteorites from 1 to 7 based on the degree of changes they underwent on their parent asteroid. First I am going to create a new dataset that only includes the <code>recclass</code> column, as it contains all the information I need.</p>
+<p>Next I am going to create a column that extracts the number representing the level of thermal alteration. Type 3 chondrites, also known as unequilibriated chondrites, are further broken down into subtypes. I am going to create bins for each level of the Type 3 subtypes.</p>
+<p>Then I am going to create a column that extracts the iron content of each chondrite.</p>
+</section>
+<section id="data-set-no.3" class="level3">
+<h3 class="anchored" data-anchor-id="data-set-no.3">Data Set No.3</h3>
+<p>Then I am going to create new variables, starting with composition. I am going to create a composition class, a composition type, and a composition subtype based on chemical composition if that information is available.</p>
+</section>
+<section id="save-cleaned-data" class="level3">
+<h3 class="anchored" data-anchor-id="save-cleaned-data">Save Cleaned Data</h3>
+<p>After cleaning and creating new variables, the dataset is saved to the data-clean folder as a new <code>.csv</code> file. This preserves a finalized version of the data that can be reused for visualization and analysis without repeating the cleaning steps.</p>
 <hr>
 </section>
 </section>
-<section id="data-cleaning" class="level2">
-<h2 class="anchored" data-anchor-id="data-cleaning">Data Cleaning</h2>
-<section id="do-you-need-to-reformat-any-variables-into-different-types-e.g.-factors-time-dates-strings-or-remove-information-from-variable-values" class="level3">
-<h3 class="anchored" data-anchor-id="do-you-need-to-reformat-any-variables-into-different-types-e.g.-factors-time-dates-strings-or-remove-information-from-variable-values">1. Do you need to reformat any variables into different types (e.g.&nbsp;factors, time, dates, strings)? Or remove information from variable values?</h3>
-<p><strong>Yes.</strong> Several variables will need to be reformatted before analysis: the <code>year</code> variable should be converted into a date or time variable, and categorical variables such as <code>fall</code> and <code>recclass</code> may be better represented as factors. The column name <code>mass (g)</code> should also be renamed to remove parentheses and make it easier to work with in R.</p>
+<section id="data-visualization" class="level2">
+<h2 class="anchored" data-anchor-id="data-visualization">Data Visualization</h2>
+<section id="rough-draft-no.1a" class="level3">
+<h3 class="anchored" data-anchor-id="rough-draft-no.1a">Rough Draft No.1a</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="final-portfolio-part-dos_files/figure-html/rough-draft-world-map-1.png" class="img-fluid figure-img" width="1344"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
-<section id="do-you-need-to-deal-with-any-missing-data-especially-missing-data-coded-other-than-na" class="level3">
-<h3 class="anchored" data-anchor-id="do-you-need-to-deal-with-any-missing-data-especially-missing-data-coded-other-than-na">2. Do you need to deal with any missing data, especially missing data coded other than NA?</h3>
-<p><strong>Yes.</strong> The dataset contains missing values in important variables such as <code>mass (g)</code> and <code>geolocation</code>. These missing values will need to be filtered out or otherwise addressed depending on the type of visualization being created.</p>
+<section id="rough-draft-no.1b" class="level3">
+<h3 class="anchored" data-anchor-id="rough-draft-no.1b">Rough Draft No.1b</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="final-portfolio-part-dos_files/figure-html/rough-draft-us-map-1.png" class="img-fluid figure-img" width="1344"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
-<section id="do-you-need-to-filter-your-data-how" class="level3">
-<h3 class="anchored" data-anchor-id="do-you-need-to-filter-your-data-how">3. Do you need to filter your data? How?</h3>
-<p><strong>Yes.</strong> Filtering will be necessary in order to remove observations with missing coordinates for mapping, exclude extreme or invalid values, and potentially focus on a more useful range of years for clearer analysis.</p>
-</section>
-<section id="do-you-need-to-create-any-new-variables-what-variables-how" class="level3">
-<h3 class="anchored" data-anchor-id="do-you-need-to-create-any-new-variables-what-variables-how">4. Do you need to create any new variables? What variables? How?</h3>
-<p><strong>Yes.</strong> New variables will likely need to be created in order to support analysis. For example, <code>mass (g)</code> may be converted from grams to kilograms, a <code>decade</code> variable may be created from <code>year</code>, and meteorite classifications may be grouped into broader categories if needed for cleaner visualizations.</p>
-</section>
-<section id="do-you-need-to-add-new-data-join-to-your-data-what-data-how" class="level3">
-<h3 class="anchored" data-anchor-id="do-you-need-to-add-new-data-join-to-your-data-what-data-how">5. Do you need to add new data (join) to your data? What data? How?</h3>
-<p><strong>Potentially.</strong> I may add external geographic data, such as country or continent boundaries, if that would help provide more context for the spatial distribution of meteorite landings.</p>
-</section>
-<section id="do-you-need-pivot-your-data-in-any-way-why-how" class="level3">
-<h3 class="anchored" data-anchor-id="do-you-need-pivot-your-data-in-any-way-why-how">6. Do you need pivot your data in any way? Why? How?</h3>
-<p><strong>Potentially.</strong> The dataset may need to be reshaped in order to summarize meteorite counts by year or category, depending on the structure needed for my visualizations.</p>
-</section>
-<section id="do-you-need-to-summarize-any-of-the-variables-which-ones-how" class="level3">
-<h3 class="anchored" data-anchor-id="do-you-need-to-summarize-any-of-the-variables-which-ones-how">7. Do you need to summarize any of the variables? Which ones? How?</h3>
-<p><strong>Yes.</strong> Summarizing will be necessary in order to count meteorites by year, calculate average or median mass, and compare distributions across categories such as classification or fall type.</p>
-</section>
-<section id="what-other-aspects-of-your-data-need-to-be-fixed-in-order-to-make-your-data-visualizations" class="level3">
-<h3 class="anchored" data-anchor-id="what-other-aspects-of-your-data-need-to-be-fixed-in-order-to-make-your-data-visualizations">8. What other aspects of your data need to be “fixed” in order to make your data visualizations?</h3>
-<p>Other aspects of the data that may need to be fixed in order to create effective visualizations include removing duplicate or unnecessary variables such as <code>geolocation</code>, addressing inconsistencies in classification names, and handling extreme outliers in the mass variable.</p>
-</section>
-<section id="are-there-any-variables-you-can-exclude-from-your-data" class="level3">
-<h3 class="anchored" data-anchor-id="are-there-any-variables-you-can-exclude-from-your-data">9. Are there any variables you can exclude from your data?</h3>
-<p><strong>Yes.</strong> Some variables may be excluded if they are redundant or do not meaningfully contribute to my research questions. For example, <code>geolocation</code> may not be needed if latitude and longitude are already being used directly, and <code>id</code> may not be useful for analysis.</p>
+<section id="rough-draft-no.3" class="level3">
+<h3 class="anchored" data-anchor-id="rough-draft-no.3">Rough Draft No.3</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="final-portfolio-part-dos_files/figure-html/rough-draft-waffle-chart-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 </section>
 
@@ -646,5 +651,5 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<script src="final portfolio part 1_files/libs/quarto-html/zenscroll-min.js"></script>
+<script src="final portfolio part dos_files/libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

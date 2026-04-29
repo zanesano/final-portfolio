@@ -1,0 +1,458 @@
+---
+title: "Portfolio Part 2: Data Cleaning and Rough Draft"
+author: "Author: Zane Sano"
+format:
+  html:
+    theme: cyborg
+    toc: true
+    toc-depth: 2
+    page-layout: full
+    smooth-scroll: true
+---
+
+My project will use NASA meteorite landing data to explore where meteorites are found, how recorded landings have changed over time, and how meteorite mass differs across categories.
+
+---
+
+## Data Description
+
+### 1. Identify your data source.
+
+I will be using a dataset on meteorite landings from NASA, which I found through NASA's Open Data Portal. The dataset contains records of meteorites that have been found or observed falling to Earth and includes their physical characteristics and geographic locations.
+
+### 2. Describe your data, including variables and data types.
+
+The dataset contains over 45,000 observations and includes a mix of categorical and numerical variables. These variables provide identifying information, classification details, measurements, and geographic coordinates that can be used to analyze both temporal and spatial patterns in meteorite landings.
+
+| Name | Type | Description |
+|:--|:--|:--|
+| `name` | character | name of the meteorite |
+| `id` | numeric | unique identifier for each meteorite |
+| `nametype` | character | indicates whether the meteorite is classified as valid |
+| `recclass` | character | meteorite classification type |
+| `mass (g)` | numeric | mass of the meteorite |
+| `fall` | character | indicates whether the meteorite was observed falling or later discovered |
+| `year` | numeric | year the meteorite was recorded |
+| `reclat` | numeric | latitude coordinate of the meteorite landing |
+| `reclong` | numeric | longitude coordinate of the meteorite landing |
+| `geoLocation` | character | combined latitude and longitude coordinates |
+
+### 3. Identify the research questions you want to answer.
+
+- How has the number of recorded meteorite landings changed over time?
+- Where are meteorites most commonly found across the globe?
+- How does meteorite mass vary across different classifications and fall types?
+
+---
+
+## Data Cleaning
+
+### Setup
+
+This code chunk will load the packages I want to use and read in the raw meteorite data from the data-raw folder.
+
+
+```{r}
+#| label: setup
+#| echo: true
+#| message: false
+
+
+library(tidyverse)
+library(janitor)
+library(maps)
+library(waffle)
+library(patchwork)
+library(scales)
+
+meteorites <- read_csv("data-raw/Meteorite_Landings.csv", ) |>
+  clean_names()
+```
+
+Now we have our raw data loaded and can see that we currently have 45,716 observations with ten different columns. We can check the new names of the columns:
+
+```{r}
+#| label: check_names
+#| echo: false
+
+names(meteorites)
+```
+
+Now all of the column names are lowercase and consistent, and names like `mass (g)` have been renamed to `mass_g` for clarity.
+
+### Convert Variable Types
+
+Next we will convert variable types to be better suited to our needs for making visualizations by using the mutate function to convert `fall` and `reclass` into factors.
+
+```{r}
+#| label: convert_variables
+
+meteorites <- meteorites |>
+  mutate(
+    fall = as.factor(fall),
+    recclass = as.factor(recclass)
+  )
+```
+
+
+### Remove Irrelevant Information
+
+This step removes observations with missing values in key variables like `mass`, `year`, and `location`, since these are necessary for analysis and visualization. It also drops columns that are not needed for this project, such as identifiers and redundant location formatting, in order to simplify the dataset.
+
+```{r}
+#| label: filter-data
+
+meteorites <- meteorites |>
+  filter(
+    !is.na(mass_g),
+    !is.na(year),
+    year <= 2026,
+    !is.na(reclat),
+    !is.na(reclong)
+  ) |>
+  select(-geo_location, -id, -nametype)
+```
+
+This ensures the dataset is usable for analysis and plotting, and doesn't have any redundant information that we don't need. 
+
+
+### Create New Variables
+
+The recclass variable contains detailed classification information that encodes multiple characteristics of each meteorite. To make this information more useful for analysis, I will extract and reorganize it into separate variables that represent composition, thermal alteration, and iron content.
+
+```{r}
+
+#| label: new-variable_composition
+
+meteorites <- meteorites |>
+  mutate(
+    composition = factor(
+      case_when(
+        grepl("^Iron", recclass) ~ "Iron",
+        grepl("^Pallasite|^Mesosiderite", recclass) ~ "Stony-Iron",
+        grepl("^H\\d", recclass) ~ "Iron Rich Chondrite",
+        grepl("^L\\d", recclass) ~ "Low Iron Chondrite",
+        grepl("^LL\\d", recclass) ~ "Ordinary Chondrite",
+        grepl("^(C|CM|CO|CV|CR|CK|CH|CB)", recclass) ~ "Carbonaceous Chondrite",
+        grepl("^E", recclass) ~ "Enstatite",
+        TRUE ~ "Other"
+      ),
+      levels = c(
+        "Iron",
+        "Stony-Iron",
+        "Iron Rich Chondrite",
+        "Low Iron Chondrite",
+        "Ordinary Chondrite",
+        "Carbonaceous Chondrite",
+        "Enstatite",
+        "Other"
+      )
+    )
+  )
+
+meteorites |>
+  count(composition, sort = TRUE)
+```
+
+```{r}
+
+#| label: new-variable_thermalalteration
+
+meteorites <- meteorites |>
+  mutate(
+    thermal_alteration_num = str_extract(recclass, "\\d(\\.\\d+)?"),
+    thermal_alteration_num = as.numeric(thermal_alteration_num),
+    thermal_alteration = case_when(
+      !is.na(thermal_alteration_num) &
+        thermal_alteration_num >= 3.1 &
+        thermal_alteration_num < 4 ~ sprintf("%.1f", thermal_alteration_num),
+      TRUE ~ NA_character_
+    ),
+    thermal_alteration = factor(
+      thermal_alteration,
+      levels = sprintf("%.1f", seq(3.1, 3.9, by = 0.1)),
+      ordered = TRUE
+    )
+  )
+
+meteorites |>
+  count(thermal_alteration)
+```
+
+
+```{r}
+
+#| label: new-variable_ironscale
+
+meteorites <- meteorites |>
+  mutate(
+    iron_scale = case_when(
+      grepl("^Iron", recclass) ~ 4,        # all metal
+      grepl("^H\\d", recclass) ~ 3,        # high iron
+      grepl("^L\\d", recclass) ~ 2,        # low iron
+      grepl("^LL\\d", recclass) ~ 1,       # very low iron
+      grepl("^(C|CM|CO|CV|CR|CK|CH|CB)", recclass) ~ 0,  # minimal/no metal
+      TRUE ~ NA_real_
+    ),
+    iron_scale = factor(
+      iron_scale,
+      levels = 0:4,
+      ordered = TRUE,
+      labels = c(
+        "No Iron",
+        "Very Low Iron",
+        "Low Iron",
+        "High Iron",
+        "All Iron"
+      )
+    )
+  )
+
+meteorites |>
+  filter(!is.na(iron_scale)) |>
+  count(iron_scale)
+```
+
+
+```{r}
+#| label: new-variable_time-steps
+
+meteorites <- meteorites |>
+  mutate(
+    time_period = case_when(
+      year <= 1950 ~ "1950 and older",
+      year > 1950 & year <= 1960 ~ "1951 to 1960",
+      year > 1960 & year <= 1970 ~ "1961 to 1970",
+      year > 1970 & year <= 1980 ~ "1971 to 1980",
+      year > 1980 & year <= 1990 ~ "1981 to 1990",
+      year > 1990 & year <= 2000 ~ "1991 to 2000",
+      year > 2000 & year <= 2010 ~ "2001 to 2010",
+      year > 2010 ~ "2011 to current day"
+    ),
+    time_period = factor(
+      time_period,
+      levels = c(
+        "1950 and older", "1951 to 1960", "1961 to 1970",
+        "1971 to 1980", "1981 to 1990", "1991 to 2000",
+        "2001 to 2010", "2011 to current day"
+      )
+    )
+  ) |>
+  arrange(time_period)
+
+meteorites |>
+  count(time_period)
+```
+
+```{r}
+#| label: new-variable_mass-kg
+
+meteorites <- meteorites |>
+  mutate(
+    mass_kg = mass_g / 1000
+  )
+
+meteorites |>
+  summarize(
+    min_mass_kg = min(mass_kg, na.rm = TRUE),
+    max_mass_kg = max(mass_kg, na.rm = TRUE)
+  )
+```
+
+
+
+### Save Cleaned Data
+
+After cleaning and creating new variables, the dataset is saved to the data-clean folder as a new `.csv` file. This preserves a finalized version of the data that can be reused for visualization and analysis without repeating the cleaning steps.
+
+```{r}
+write_csv(meteorites, "data-clean/meteorite_landings_clean.csv")
+```
+
+
+---
+
+## Data Visualization
+
+### Rough Draft No.1
+
+```{r}
+#| label: rough-draft-map
+#| echo: true
+#| message: false
+#| warning: false
+#| fig-width: 14
+#| fig-height: 8
+
+world_map <- map_data("world")
+
+ggplot() +
+  geom_polygon(
+    data = world_map,
+    aes(x = long, y = lat, group = group),
+    fill = "#14213d",
+    color = "#2b4c8a",
+    linewidth = 0.25
+  ) +
+  geom_point(
+    data = meteorites,
+    aes(
+      x = reclong,
+      y = reclat,
+      color = time_period,
+      size = mass_kg
+    ),
+    alpha = 0.45
+  ) +
+  coord_fixed(1.3) +
+scale_size_continuous(
+  trans = "sqrt",
+  range = c(0.08, 6),
+  breaks = c(100, 1000, 10000),
+  labels = label_comma(),
+  name = "Meteorite Mass (kg)"
+  ) +
+  scale_color_manual(
+    values = c(
+      "1950 and older" = "#DEF2F9", 
+      "1951 to 1960" = "#B8C7BC",
+      "1961 to 1970" = "#777E57",
+      "1971 to 1980" = "#444406",
+      "1981 to 1990" = "#72690E", 
+      "1991 to 2000" = "#ADA207",
+      "2001 to 2010" = "#E8DA00", 
+      "2011 to current day" = "#F4ED80"
+    ),
+    name = "Time Period"
+  ) +
+  labs(
+    title = "Meteorite Landings Around the World",
+    x = NULL,
+    y = NULL
+  ) +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "#020617", color = NA),
+    panel.background = element_rect(fill = "#020617", color = NA),
+    legend.background = element_rect(fill = "#0b132b", color = NA),
+    legend.box.background = element_rect(fill = "#0b132b", color = "#243b6b", linewidth = 0.5),
+    legend.key = element_rect(fill = "#0b132b", color = NA),
+    legend.text = element_text(color = "white", size = 10),
+    legend.title = element_text(color = "white", size = 12, face = "bold"),
+    plot.title = element_text(
+      color = "white",
+      size = 26,
+      face = "bold",
+      hjust = 0.5,
+      margin = margin(b = 20)
+    ),
+    legend.position = "left",
+    legend.box = "vertical",
+    legend.margin = margin(10, 10, 10, 10),
+    plot.margin = margin(20, 20, 20, 20)
+  ) +
+  guides(
+    size = guide_legend(
+      order = 1,
+      title.position = "top",
+      override.aes = list(color = "white", alpha = 0.5),
+      label.position = "right"
+    ),
+    color = guide_legend(
+      order = 2,
+      title.position = "top",
+      override.aes = list(shape = 15, size = 5, alpha = 1)
+    )
+  )
+```
+
+
+
+
+
+```{r}
+waffle_plot <- meteorites |>
+  filter(!is.na(thermal_alteration), !is.na(iron_scale)) |>
+  mutate(
+    iron_stack = factor(
+      iron_scale,
+      levels = c("High Iron", "Low Iron", "Very Low Iron", "No Iron")
+    )
+  ) |>
+  count(thermal_alteration, iron_stack) |>
+  ggplot(aes(fill = iron_stack, values = n)) +
+  geom_waffle(
+    n_rows = 6,
+    size = 0.35,
+    color = "gray70",
+    flip = TRUE
+  ) +
+  facet_wrap(~ thermal_alteration, nrow = 1, strip.position = "bottom") +
+  scale_fill_manual(
+    values = c(
+      "No Iron" = "#d9d9d9",
+      "Very Low Iron" = "#999",
+      "Low Iron" = "#646464",
+      "High Iron" = "#454545"
+    ),
+    breaks = c("No Iron", "Very Low Iron", "Low Iron", "High Iron"),
+    name = "Iron Content"
+  ) +
+  labs(
+    title = "Iron Content by Thermal Alteration Level",
+    subtitle = "Each square represents about 100 meteorite observations"
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid = element_blank(),
+    panel.spacing.x = unit(0, "pt"), 
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank(),
+    legend.position = "top",
+    strip.text = element_blank(),
+    
+    # REMOVE MARGIN HERE
+    plot.margin = margin(t = 10, r = 10, b = 0, l = 10), 
+    
+    plot.title = element_text(size = 18, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 12, hjust = 0.5)
+  )
+
+
+xaxisgradientdata <- tibble(
+  x = seq(1, 700),
+  y = 1,
+  value = seq(0, 1, length.out = 700)
+)
+
+binamount <- 9
+
+xaxisgradientbar <- ggplot(xaxisgradientdata, aes(x = x, y = y, fill = value)) +
+  geom_tile(height = 1) + 
+  annotate("text", x = 20, y = 1, label = "Primitive", color = "white", hjust = 0, fontface = "bold", size = 4) +
+  annotate("text", x = 680, y = 1, label = "Thermally Altered", color = "white", hjust = 1, fontface = "bold", size = 4) +
+  scale_fill_gradientn(
+    colors = c("#001f4d", "#0057b8", "#b7dff2", "#f4df9c", "#ffd60a", "#f97316", "#7f1d1d"),
+    guide = "none"
+  ) +
+  scale_x_continuous(
+    expand = c(0, 0),
+    breaks = seq(1, 700, length.out = binamount + 1),
+    guide = guide_axis(position = "top")
+  ) +
+  coord_cartesian(expand = FALSE) +
+  theme_void() +
+  theme(
+    panel.border = element_rect(color = "lightgray", fill = NA, linewidth = 1),
+    axis.ticks.x = element_line(color = "lightgray", linewidth = 0.5),
+    axis.ticks.length.x = unit(5, "pt"),
+    
+    # NEGATIVE MARGIN TO SNAP TO TOP PLOT
+    plot.margin = margin(t = -5, r = 10, b = 10, l = 10) 
+  )
+
+# Combine using your original height ratio
+waffle_plot / xaxisgradientbar +
+  plot_layout(heights = c(10, 1))
+```

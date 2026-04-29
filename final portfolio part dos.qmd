@@ -1,280 +1,64 @@
 ---
-title: "Statistical Computing with R: Final Portfolio"
+title: "Portfolio Part 2: Data Cleaning and Rough Draft"
 author: "Author: Zane Sano"
 format:
   html:
-    theme: none
+    theme: cyborg
     toc: true
     toc-depth: 2
     page-layout: full
     smooth-scroll: true
-    code-fold: false
-    include-in-header:
-      text: |
-        <style>
-          :root {
-            --bg: #0a0f1f;
-            --panel: #1b2748;
-            --panel-2: #24345f;
-            --panel-3: #31467a;
-            --border-light: #8ea4d6;
-            --border-mid: #4b6297;
-            --border-dark: #0f1833;
-            --text: #e8eefc;
-            --muted: #bfd0f7;
-            --accent: #8fd3ff;
-            --gold: #f4d36b;
-            --link: #9bd7ff;
-          }
-
-          html {
-            background:
-              radial-gradient(circle at 15% 20%, rgba(255,255,255,0.14) 0 1px, transparent 1px),
-              radial-gradient(circle at 80% 30%, rgba(255,255,255,0.12) 0 1px, transparent 1px),
-              radial-gradient(circle at 35% 75%, rgba(255,255,255,0.10) 0 1px, transparent 1px),
-              radial-gradient(circle at 65% 60%, rgba(255,255,255,0.12) 0 1px, transparent 1px),
-              linear-gradient(180deg, #09101f 0%, #101936 45%, #16244a 100%);
-            background-size: 240px 240px, 300px 300px, 280px 280px, 320px 320px, auto;
-            min-height: 100%;
-          }
-          
-          .title {
-            font-family: "Orbitron", "Trebuchet MS", Verdana, Arial, sans-serif;
-            font-size: 2.2rem;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            line-height: 1;
-          }
-          
-          .author {
-           font-family: "Lucida Console", "Courier New", monospace;
-           font-size: 1rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--gold);
-          }
-
-          body {
-            background: transparent;
-            color: var(--text);
-            font-family: Verdana, Tahoma, Arial, sans-serif;
-            line-height: 1.65;
-            font-size: 16px;
-          }
-
-          #quarto-content {
-            padding-top: 1.2rem;
-            padding-bottom: 2rem;
-          }
-
-          .quarto-title-block {
-            background: linear-gradient(180deg, #253b71 0%, #18274d 100%);
-            border: 3px solid;
-            border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
-            box-shadow: inset 1px 1px 0 #dbe6ff, inset -1px -1px 0 #102044, 0 6px 18px rgba(0,0,0,0.35);
-            padding: 1.25rem 1.5rem 1rem 1.5rem;
-            margin-bottom: 1.5rem;
-          }
-
-          .quarto-title-block .title {
-            font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
-            font-size: 2.1rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: #ffffff;
-            text-shadow: 1px 1px 0 #0b1328;
-            margin-bottom: 0.35rem;
-          }
-
-          .quarto-title-block .author,
-          .quarto-title-block .date,
-          .quarto-title-block .description {
-            color: var(--muted);
-            font-size: 0.95rem;
-          }
-
-          #TOC, .sidebar nav[role="doc-toc"] {
-            background: linear-gradient(180deg, #213462 0%, #18284f 100%);
-            border: 3px solid;
-            border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
-            padding: 0.8rem 1rem;
-            box-shadow: inset 1px 1px 0 #dbe6ff, inset -1px -1px 0 #102044;
-          }
-
-          #TOC .toc-title {
-            color: var(--gold);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-          }
-
-          a {
-            color: var(--link);
-          }
-
-          a:hover {
-            color: #d6f0ff;
-          }
-
-          h2 {
-            margin-top: 2.2rem;
-            margin-bottom: 1rem;
-            padding: 0.55rem 0.75rem;
-            font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            font-size: 1.2rem;
-            color: #ffffff;
-            background: linear-gradient(180deg, #30487d 0%, #22355f 100%);
-            border: 3px solid;
-            border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
-            box-shadow: inset 1px 1px 0 #dbe6ff, inset -1px -1px 0 #13254a;
-          }
-
-          h3 {
-            margin-top: 1.3rem;
-            margin-bottom: 0.7rem;
-            color: var(--gold);
-            font-size: 1rem;
-            font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
-          }
-
-          p, li {
-            color: var(--text);
-          }
-
-        code {
-          font-family: "Lucida Console", "Courier New", monospace;
-          text-transform: uppercase;
-          color: #ffffff;
-          letter-spacing: 0.5px;
-
-          background: rgba(255, 255, 255, 0.08);
-          backdrop-filter: blur(6px);
-          -webkit-backdrop-filter: blur(6px);
-
-          padding: 0.12em 0.4em;
-          border: 1px solid rgba(255, 255, 255, 0.25);
-          border-radius: 3px;
-
-          font-size: 0.95em;
-          }
-
-          .retro-panel {
-            background: linear-gradient(180deg, var(--panel-2) 0%, var(--panel) 100%);
-            border: 3px solid;
-            border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
-            box-shadow: inset 1px 1px 0 #dbe6ff, inset -1px -1px 0 #112247, 0 4px 12px rgba(0,0,0,0.22);
-            padding: 1.1rem 1.2rem;
-            margin: 1rem 0 1.5rem 0;
-          }
-
-          .intro-terminal {
-            background: #0b1327;
-            border: 3px solid;
-            border-color: #7ea2dc #09152f #09152f #7ea2dc;
-            box-shadow: inset 1px 1px 0 #d8e5ff, inset -1px -1px 0 #09152f;
-            padding: 1rem 1.15rem;
-            margin-bottom: 1.5rem;
-            font-family: "Lucida Console", "Courier New", monospace;
-            color: #b8ffd4;
-          }
-
-          .intro-terminal strong {
-            color: #fff3a1;
-          }
-
-          table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin: 1rem 0 1.25rem 0;
-            background: #132146;
-            border: 3px solid;
-            border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
-            box-shadow: inset 1px 1px 0 #dbe6ff, inset -1px -1px 0 #102044;
-          }
-
-          thead th {
-            background: linear-gradient(180deg, #4e6fad 0%, #365185 100%);
-            color: #ffffff;
-            text-align: left;
-            padding: 0.7rem 0.8rem;
-            border-bottom: 2px solid #18274d;
-            font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
-          }
-
-          tbody td {
-            padding: 0.7rem 0.8rem;
-            border-top: 1px solid rgba(255,255,255,0.06);
-            color: var(--text);
-          }
-
-          tbody tr:nth-child(odd) td {
-            background: rgba(255,255,255,0.02);
-          }
-
-          tbody tr:hover td {
-            background: rgba(143,211,255,0.09);
-          }
-
-          ul {
-            padding-left: 1.35rem;
-          }
-
-          li {
-            margin-bottom: 0.35rem;
-          }
-
-          hr {
-            border: none;
-            border-top: 2px solid #5b74a8;
-            margin: 1.8rem 0;
-            opacity: 0.8;
-          }
-
-          .summary-box {
-            background: linear-gradient(180deg, #2a3f73 0%, #1c2b52 100%);
-            border: 3px solid;
-            border-color: #d9e5ff #102044 #102044 #d9e5ff;
-            box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #102044;
-            padding: 1rem 1.15rem;
-            margin-top: 1rem;
-          }
-
-          .summary-box p:last-child {
-            margin-bottom: 0;
-          }
-
-          .callout {
-            background: linear-gradient(180deg, #24355f 0%, #18274d 100%) !important;
-            border: 3px solid !important;
-            border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light) !important;
-            border-radius: 0 !important;
-            box-shadow: inset 1px 1px 0 #dbe6ff, inset -1px -1px 0 #102044;
-          }
-
-          .callout-title-container {
-            color: var(--gold) !important;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-          }
-          
-          
-        </style>
 execute: 
   echo: false
   warning: false
   message: false
-embed-resources: true
 ---
-<br>
-<div class="intro-terminal">
-<strong>MISSION LOG //</strong> My project will use NASA meteorite landing data to explore where meteorites are found, how recorded landings have changed over time, and how meteorite mass differs across categories. 
-</div>
+
+My project will use NASA meteorite landing data to explore where meteorites are found, how recorded landings have changed over time, and how meteorite mass differs across categories.
+
+---
+
+## Data Description
+
+### 1. Identify your data source.
+
+I will be using a dataset on meteorite landings from NASA, which I found through NASA's Open Data Portal. The dataset contains records of meteorites that have been found or observed falling to Earth and includes their physical characteristics and geographic locations.
+
+### 2. Describe your data, including variables and data types.
+
+The dataset contains over 45,000 observations and includes a mix of categorical and numerical variables. These variables provide identifying information, classification details, measurements, and geographic coordinates that can be used to analyze both temporal and spatial patterns in meteorite landings.
+
+| Name | Type | Description |
+|:--|:--|:--|
+| `name` | character | name of the meteorite |
+| `id` | numeric | unique identifier for each meteorite |
+| `nametype` | character | indicates whether the meteorite is classified as valid |
+| `recclass` | character | meteorite classification type |
+| `mass (g)` | numeric | mass of the meteorite |
+| `fall` | character | indicates whether the meteorite was observed falling or later discovered |
+| `year` | numeric | year the meteorite was recorded |
+| `reclat` | numeric | latitude coordinate of the meteorite landing |
+| `reclong` | numeric | longitude coordinate of the meteorite landing |
+| `geoLocation` | character | combined latitude and longitude coordinates |
+
+### 3. Identify the research questions you want to answer.
+
+- How has the number of recorded meteorite landings changed over time?
+- Where are meteorites most commonly found across the globe?
+- How does meteorite mass vary across different classifications and fall types?
+
+---
+
+## Data Cleaning
+
+### Setup
+
+This code chunk will load the packages I want to use and read in the raw meteorite data from the data-raw folder as well as use **clean_names( )** so that variables such as `mass (g)` and `geoLocation` are renamed to cleaner formats like `mass_g` and `geo_location`. I am also going to remove columns with redundant information or information I don't need for my visualizations. Lastly, I am going to convert the `fall` column into a factor variable type.
 
 ```{r}
-#| label: set-up
+#| label: setup
+#| message: false
+
 
 library(tidyverse)
 library(janitor)
@@ -290,70 +74,28 @@ meteorites <- read_csv("data-raw/Meteorite_Landings.csv", ) |>
 ```
 
 
-## Data Description
+### Convert Variable Types
 
-<div class="retro-panel">
-
-### 1. Identify your data source.
-
-I will be using a dataset on meteorite landings from NASA, which I found through NASA's Open Data Portal. The dataset contains records of meteorites that have been found or observed falling to Earth and includes their physical characteristics and geographic locations.
-
-### 2. Describe your data, including variables and data types.
-
-The dataset contains over 45,000 observations and includes a mix of categorical and numerical variables. These variables provide identifying information, classification details, measurements, and geographic coordinates that can be used to analyze both temporal and spatial patterns in meteorite landings.
-
-
-| Name | Type | Description |
-|:--|:--|:--|
-| &nbsp;`name`&nbsp; | character | name of the meteorite |
-| &nbsp;`id`&nbsp; | numeric | unique identifier for each meteorite |
-| &nbsp;`nametype`&nbsp; | character | indicates whether the meteorite is classified as valid |
-| &nbsp;`recclass`&nbsp; | character | meteorite classification type |
-| &nbsp;`mass (g)`&nbsp; | numeric | mass of the meteorite |
-| &nbsp;`fall`&nbsp; | character | indicates whether the meteorite was observed falling or later discovered |
-| &nbsp;`year`&nbsp; | numeric | year the meteorite was recorded |
-| &nbsp;`reclat`&nbsp; | numeric | latitude coordinate of the meteorite landing |
-| &nbsp;`reclong`&nbsp; | numeric | longitude coordinate of the meteorite landing |
-| &nbsp;`geoLocation`&nbsp; | character | combined latitude and longitude coordinates |
-
-### 3. Identify the research questions you want to answer.
-
-- How has the number of recorded meteorite landings and the mass of meteorites changed over time?
-- How does the iron content of chondrite meteorites change across different levels of thermal alteration?
-- How does meteorite mass vary across different classifications and fall types?
-
-</div>
-
-## Data Cleaning
-
-<div class="retro-panel">
-
-### Dataset 1A & 1B
-
-My first data set will be used to visualize the landings of meteorites on Earth and in the US across different decades. I am going to filter the original data set to remove any years after 2026 since those were incorrectly entered. I am also going to remove the columns for information I don't need for this specific dataset. Next I am going to recreate an additional factor variable called `decades` based off the values of interest in `year`. I am also going to convert `mass_g` to `mass_kg`. I am also going to create a second data set that only includes the observations within the United States for my second map. Lastly I am going to save the cleaned data set into the correct folder.
-
-
-### Dataset 2
-
-My second visualization will display the iron content and the levels of thermal alteration of chondrite meteorites based on the Van Schmus and Wood classification, which ranks meteorites from 1 to 7 based on the degree of changes they underwent on their parent asteroid. First I am going to create a new dataset that only includes the `recclass` column, as it contains all the information I need. Next I am going to create a column that extracts the number representing the level of thermal alteration. Type 3 chondrites, also known as unequilibriated chondrites, are further broken down into subtypes. I am going to create bins for each level of the Type 3 subtypes. Then I am going to create a column that extracts the iron content of each chondrite. Lastly, I am going to save the cleaned data set into the correct folder.
-
-### Dataset 3
-
-beans
-
-</div>
+Next we will convert variable types to be better suited to our needs for making visualizations by using the mutate function to convert `fall` and `reclass` into factors.
 
 ```{r}
-#| label: data-cleaning
+#| label: convert_variables
 
-# convert variables
 meteorites <- meteorites |>
   mutate(
     fall = as.factor(fall),
     recclass = as.factor(recclass)
   )
+```
 
-# filter dataset 1
+
+### Data Set No.1
+
+My first data set will be used to visualize the landings of meteorites on Earth and in the US across different decades. I am going to filter the original data set to remove any years after 2026. I am also going to remove the columns for information I don't need for this specific dataset. 
+
+```{r}
+#| label: V1_filter-data
+
 meteorites_map <- meteorites |>
   filter(
     year < 2026,
@@ -366,8 +108,13 @@ meteorites_map <- meteorites |>
     -recclass, 
     -fall
     )
+```
 
-# create new variables
+Next I am going to recreate an additional factor variable called `decades` based off the values of interest in `year`. I am also going to convert `mass_g` to `mass_kg`. I am also going to create a second data set that only includes the observations within the United States for my second map.
+
+```{r}
+#| label: meteorites-map_new-variables
+
 meteorites_map <- meteorites_map |>
   mutate(
     time_period = case_when(
@@ -390,12 +137,38 @@ us_meteorites <- meteorites_map |>
   ) |>
   filter(!is.na(us_state))
 
-# filter data set 2
+```
+
+Lastly I am going to save the cleaned data set into the correct folder.
+
+```{r}
+#| label: V1_save-clean-data
+
+write_csv(meteorites_map, "data-clean/V1_data.csv")
+write_csv(us_meteorites, "data-clean/V1b_data.csv")
+```
+
+
+
+
+### Data Set No.2
+
+My second visualization will display the iron content and the levels of thermal alteration of chondrite meteorites based on the Van Schmus and Wood classification, which ranks meteorites from 1 to 7 based on the degree of changes they underwent on their parent asteroid. First I am going to create a new dataset that only includes the `recclass` column, as it contains all the information I need.
+
+
+```{r}
+#| label: V2_filter-data
+
 chondrites_thermal_iron <- meteorites |>
   select(recclass) |>
   filter(!is.na(recclass))
+```
 
-#new thermal variables
+Next I am going to create a column that extracts the number representing the level of thermal alteration. Type 3 chondrites, also known as unequilibriated chondrites, are further broken down into subtypes. I am going to create bins for each level of the Type 3 subtypes. 
+
+```{r}
+#| label: thermal_new-variables
+
 chondrites_thermal_iron <- chondrites_thermal_iron |>
   mutate(
     thermal_match = str_match(
@@ -424,7 +197,13 @@ chondrites_thermal_iron <- chondrites_thermal_iron |>
   ) |>
   filter(!is.na(thermal_alteration_bins))
 
-#new iron variables
+```
+
+Then I am going to create a column that extracts the iron content of each chondrite. 
+
+```{r}
+#| label: iron_new-variable
+
 chondrites_thermal_iron <- chondrites_thermal_iron |>
   mutate(
     iron_content = case_when(
@@ -446,23 +225,31 @@ chondrites_thermal_iron <- chondrites_thermal_iron |>
   ) |>
   
   filter(!is.na(iron_content))
+```
 
-# filter data set 3
+
+
+
+
+
+### Data Set No.3
+
+```{r}
+#| label: V3_filter-data
+
 meteorites_composition <- meteorites |>
-  select(recclass, year, fall) |>
+  select(recclass) |>
   filter(!is.na(recclass))
+```
 
-# new composition variables
+
+Then I am going to create new variables, starting with composition. I am going to create a composition class, a composition type, and a composition subtype based on chemical composition if that information is available. 
+
+```{r}
+#| label: composition_new-variables
+
 meteorites_composition <- meteorites_composition |>
   mutate(
-    year_bin = case_when(
-      year >= 1970 & year <= 2015 ~ floor((year - 1970) / 5) * 5 + 1970,
-      TRUE ~ NA_real_
-    ),
-    year_bin = factor(
-      year_bin,
-      levels = seq(1970, 2015, by = 5)
-    ),
     composition_class = case_when(
       str_detect(recclass, "^Iron") ~ "Iron",
       str_detect(recclass, "^(Pallasite|Mesosiderite)") ~ "Stony Iron",
@@ -565,26 +352,40 @@ meteorites_composition <- meteorites_composition |>
   )
 
 
-#save clean data
-write_csv(meteorites_map, "data-clean/V1_data.csv")
-write_csv(us_meteorites, "data-clean/V1b_data.csv")
-write_csv(chondrites_thermal_iron, "data-clean/V2_data.csv")
-write_csv(meteorites_composition, "data-clean/V3_data")
 ```
 
 
-## Data Visualization
 
-<div class="retro-panel">
 
-### Visualization 1A
 
-Visualization Description
+
+
+
+
+
+
+
+
+### Save Cleaned Data
+
+After cleaning and creating new variables, the dataset is saved to the data-clean folder as a new `.csv` file. This preserves a finalized version of the data that can be reused for visualization and analysis without repeating the cleaning steps.
 
 ```{r}
-#| label: viz-1a
-#| fig-cap: "This is a caption for the first visualization"
-#| fig-alt: "This is an alternative text for the first visualization"
+#| label: save-cleaned-data
+
+write_csv(meteorites, "data-clean/meteorite_landings_clean.csv")
+```
+
+
+
+---
+
+## Data Visualization
+
+### Rough Draft No.1a
+
+```{r}
+#| label: rough-draft-world-map
 #| fig-width: 14
 #| fig-height: 8
 
@@ -668,14 +469,11 @@ scale_size_continuous(
   )
 ```
 
-### Visualization 1b
 
-Visualization Description
+### Rough Draft No.1b
 
 ```{r}
-#| label: viz-1b
-#| fig-cap: "This is a caption for the first visualization"
-#| fig-alt: "This is an alternative text for the first visualization"
+#| label: rough-draft-us-map
 #| fig-width: 14
 #| fig-height: 8
 
@@ -764,15 +562,12 @@ ggplot() +
 
 ```
 
-### Visualization 2
 
-Visualization Description
+### Rough Draft No.3
+
 
 ```{r}
-#| label: viz-2
-#| fig-cap: "This is a caption for the first visualization"
-#| fig-alt: "This is an alternative text for the first visualization"
-#| fig-align: center
+#| label: rough-draft-waffle-chart
 
 waffle_plot <- chondrites_thermal_iron |>
   mutate(
@@ -882,11 +677,3 @@ waffle_plot / x_axis_gradient_bar +
   plot_layout(heights = c(10, 1))
 
 ```
-
-
-
-### Visualization 3
-
-beans
-
-</div>
